@@ -2,14 +2,15 @@ import gradio as gr
 import os
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
-from openxlab.model import download
+#from openxlab.model import download
 
-base_path = './internlm2-chat-1_8b'
-os.system(f'git clone https://code.openxlab.org.cn/cdonghui/internlm2-chat-1_8b.git {base_path}')
-os.system(f'cd {base_path} && git lfs pull')
+base_path = '/root/intern-ai/XTuner/internlm2-chat-1_8b'
+#base_path = './internlm2-chat-1_8b'
+#os.system(f'git clone https://code.openxlab.org.cn/cdonghui/internlm2-chat-1_8b.git {base_path}')
+#os.system(f'cd {base_path} && git lfs pull')
 
 tokenizer = AutoTokenizer.from_pretrained(base_path,trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(base_path,trust_remote_code=True, torch_dtype=torch.float16).cuda()
+model = AutoModelForCausalLM.from_pretrained(base_path,trust_remote_code=True, torch_dtype=torch.float16).to('cpu')
 
 def chat(message,history):
     for response,history in model.stream_chat(tokenizer,message,history,max_length=2048,top_p=0.7,temperature=1):
